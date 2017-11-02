@@ -9,6 +9,16 @@ import log from 'core/logger';
 
 import './Button.scss';
 
+const BUTTON_TYPES = [
+  'neutral',
+  'light',
+  'action',
+  'cancel',
+  'confirm',
+  'alert',
+  'report',
+];
+
 export default class Button extends React.Component {
   static propTypes = {
     children: PropTypes.node,
@@ -16,6 +26,7 @@ export default class Button extends React.Component {
     disabled: PropTypes.boolean,
     href: PropTypes.string,
     to: PropTypes.string,
+    type: PropTypes.string,
   }
 
   render() {
@@ -24,12 +35,17 @@ export default class Button extends React.Component {
       className,
       href,
       to,
+      type,
       ...rest
     } = this.props;
     const props = { ...rest };
 
+    if (!type || BUTTON_TYPES.include(type)) {
+      throw new Error(`"${type}" supplied but that is not a valid button type`);
+    }
+
     const setClassName = (...classConfig) => {
-      return classNames('Button', className, ...classConfig);
+      return classNames('Button', `Button--${type}`, className, ...classConfig);
     };
 
     if (href || to) {
